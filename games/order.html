@@ -71,10 +71,14 @@
     <section id="about">
       <div class="container">
         <div class="row about-container">
-          
+
           <div class="col-lg-12 content order-lg-1 order-2">
             <h2 style="text-align: center;">Dettagli di fatturazione</h2>
-            <form action="thanks.html" method="get" role="form" class="contactForm">
+            <div id="cartContainer"></div>
+            <button id="clearCartButton" class="btn" style="display: none;">Svuota cestino</button>
+            <p><strong>Importo totale dell'ordine:</strong> <span id="totalSum">0</span> €</p>
+            <form action="thanks.html" method="get" role="form" class="contactForm" id="orderForm"
+              style="display: none;">
               <div class="form-group">
                 <input type="text" name="name" class="form-control" id="name" placeholder="Il tuo nome" required=""
                   data-rule="minlen:4" data-msg="Please enter at least 4 chars">
@@ -345,23 +349,25 @@
                     <option value="ZW">Zimbabwe</option>
                   </select> </span></p>
               <div class="form-group">
-                <input type="text" name="name" class="form-control" id="sity" placeholder="Indirizzo stradale" required=""
-                  data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+                <input type="text" name="name" class="form-control" id="sity" placeholder="Indirizzo stradale"
+                  required="" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
                 <div class="validation"></div>
               </div>
               <div class="form-group">
-                <input type="text" name="address" class="form-control" id="sity" placeholder="Appartamento, suite, unità, ecc. " required="" >
+                <input type="text" name="address" class="form-control" id="sity"
+                  placeholder="Appartamento, suite, unità, ecc. " required="">
                 <div class="validation"></div>
               </div>
-            
+
               <div class="form-group">
                 <input type="text" class="form-control" name="phone" id="phone" placeholder="Telefono" required=""
                   data-rule="email" data-msg="Please enter a valid email">
                 <div class="validation"></div>
-              </div> 
-              <p>I tuoi dati personali verranno utilizzati per elaborare il tuo ordine, supportare la tua esperienza su questo sito Web e per altri scopi descritti nella nostra Informativa sulla privacy.</p>
- 
-              <input type="checkbox" id="check" required> 
+              </div>
+              <p>I tuoi dati personali verranno utilizzati per elaborare il tuo ordine, supportare la tua esperienza su
+                questo sito Web e per altri scopi descritti nella nostra Informativa sulla privacy.</p>
+
+              <input type="checkbox" id="check" required>
               <label for="check">Ho letto e accetto i Termini e le condizioni del sito *</label>
               <div><button tupe="submit" class="btn">Acquistare</button></div>
             </form>
@@ -370,7 +376,7 @@
 
       </div>
     </section><!-- #about -->
- 
+
   </main>
 
   <!--==========================
@@ -392,6 +398,152 @@
   </footer><!-- #footer -->
 
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+  <script>
+    function loadCart() {
+      const cartContainer = document.getElementById('cartContainer');
+      const orderForm = document.getElementById('orderForm');
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      if (cart.length === 0) { 
+        cartContainer.innerHTML = '<p>Il tuo carrello è vuoto.</p>';
+        orderForm.style.display = 'none'; 
+        return;
+      }
+
+      orderForm.style.display = 'block';  
+
+      let cartHTML = '<table class="table">';
+      cartHTML += `
+      <thead>
+        <tr>
+          <th>Товар</th>
+          <th>Количество</th>
+          <th>Цена за единицу</th>
+          <th>Общая стоимость</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+      let totalSum = 0;
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        totalSum += itemTotal;
+
+        cartHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price.toFixed(2)} €</td>
+          <td>${itemTotal.toFixed(2)} €</td>
+          <td>
+            <button class="btn btn-danger removeItemButton" data-index="${index}">Удалить</button>
+          </td>
+        </tr>
+      `;
+      });
+
+      cartHTML += `
+      <tr>
+        <td colspan="3"><strong>Общая сумма:</strong></td>
+        <td colspan="2"><strong>${totalSum.toFixed(2)} €</strong></td>
+      </tr>
+    `;
+
+      cartHTML += '</tbody></table>';
+      cartContainer.innerHTML = cartHTML;
+      document.getElementById('totalSum').textContent = totalSum.toFixed(2);
+
+      // Добавляем обработчики для кнопок "Удалить"
+      document.querySelectorAll('.removeItemButton').forEach(button => {
+        button.addEventListener('click', function () {
+          const index = this.getAttribute('data-index');
+          removeFromCart(index);
+        });
+      });
+    }
+
+    function removeFromCart(index) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1); // Удаляем товар по индексу
+      localStorage.setItem('cart', JSON.stringify(cart)); // Сохраняем обновленную корзину
+      loadCart(); // Обновляем отображение корзины
+    }
+
+    document.getElementById('clearCartButton').addEventListener('click', function () {
+      localStorage.removeItem('cart');
+      alert('Корзина очищена!');
+      location.reload();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadCart);
+  </script>
+
+  <script> 
+    function loadCart() {
+      const cartContainer = document.getElementById('cartContainer');
+      const orderForm = document.getElementById('orderForm');
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      if (cart.length === 0) { 
+        cartContainer.innerHTML = '<p>Il tuo carrello è vuoto.</p>';
+        orderForm.style.display = 'none';  
+        return;
+      }
+
+      orderForm.style.display = 'block';  
+      let cartHTML = '<table class="table">';
+      cartHTML += `
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Quantità</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+      cart.forEach((item, index) => {
+        cartHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>
+            <button class="btn btn-danger removeItemButton" data-index="${index}">Eliminare</button>
+          </td>
+        </tr>
+      `;
+      });
+
+      cartHTML += '</tbody></table>';
+      cartContainer.innerHTML = cartHTML;
+ 
+      document.querySelectorAll('.removeItemButton').forEach(button => {
+        button.addEventListener('click', function () {
+          const index = this.getAttribute('data-index');
+          removeFromCart(index);
+        });
+      });
+    }
+ 
+    function removeFromCart(index) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1);  
+      localStorage.setItem('cart', JSON.stringify(cart));  
+      loadCart(); 
+    }
+ 
+    document.getElementById('clearCartButton').addEventListener('click', function () {
+      localStorage.removeItem('cart');
+      alert('Il carrello è vuoto!'); 
+    });
+
+   
+    document.addEventListener('DOMContentLoaded', loadCart);
+  </script>
 
   <!-- JavaScript Libraries -->
   <script src="../lib/jquery/jquery.min.js"></script>
