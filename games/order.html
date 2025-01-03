@@ -36,7 +36,7 @@
     <div class="container">
 
       <div id="logo" class="pull-left">
-        <h1><a href="../index.html#hero">Gioco Magico</a></h1>
+        <h1><a href="../index.html#hero">Giocomagico</a></h1>
       </div>
 
       <nav id="nav-menu-container">
@@ -46,6 +46,9 @@
           <li><a href="../index.html#services">Servizi</a></li>
           <li><a href="../index.html#portfolio">Giochi</a></li>
           <li><a href="../index.html#contact">Contattaci</a></li>
+          <li><a href="order.html"><img src="../img/shop.png" alt="shop" style="width: 20px; margin-right: 5px;">
+              Cesta</a></li>
+
         </ul>
       </nav><!-- #nav-menu-container -->
     </div>
@@ -369,6 +372,9 @@
 
               <input type="checkbox" id="check" required>
               <label for="check">Ho letto e accetto i Termini e le condizioni del sito *</label>
+              <div>
+                <a href="privacy.html">Politica sulla Privacy</a> | <a href="terms.html">Termini e Condizioni</a>
+              </div>  <br>
               <div><button tupe="submit" class="btn">Acquistare</button></div>
             </form>
           </div>
@@ -404,13 +410,13 @@
       const orderForm = document.getElementById('orderForm');
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      if (cart.length === 0) { 
+      if (cart.length === 0) {
         cartContainer.innerHTML = '<p>Il tuo carrello è vuoto.</p>';
-        orderForm.style.display = 'none'; 
+        orderForm.style.display = 'none';
         return;
       }
 
-      orderForm.style.display = 'block';  
+      orderForm.style.display = 'block';
 
       let cartHTML = '<table class="table">';
       cartHTML += `
@@ -481,19 +487,19 @@
     document.addEventListener('DOMContentLoaded', loadCart);
   </script>
 
-  <script> 
+  <script>
     function loadCart() {
       const cartContainer = document.getElementById('cartContainer');
       const orderForm = document.getElementById('orderForm');
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      if (cart.length === 0) { 
+      if (cart.length === 0) {
         cartContainer.innerHTML = '<p>Il tuo carrello è vuoto.</p>';
-        orderForm.style.display = 'none';  
+        orderForm.style.display = 'none';
         return;
       }
 
-      orderForm.style.display = 'block';  
+      orderForm.style.display = 'block';
       let cartHTML = '<table class="table">';
       cartHTML += `
       <thead>
@@ -520,7 +526,7 @@
 
       cartHTML += '</tbody></table>';
       cartContainer.innerHTML = cartHTML;
- 
+
       document.querySelectorAll('.removeItemButton').forEach(button => {
         button.addEventListener('click', function () {
           const index = this.getAttribute('data-index');
@@ -528,20 +534,20 @@
         });
       });
     }
- 
+
     function removeFromCart(index) {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart.splice(index, 1);  
-      localStorage.setItem('cart', JSON.stringify(cart));  
-      loadCart(); 
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
     }
- 
+
     document.getElementById('clearCartButton').addEventListener('click', function () {
       localStorage.removeItem('cart');
-      alert('Il carrello è vuoto!'); 
+      alert('Il carrello è vuoto!');
     });
 
-   
+
     document.addEventListener('DOMContentLoaded', loadCart);
   </script>
 
